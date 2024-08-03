@@ -55,7 +55,7 @@ function initializeRating() {
         getRandomJoke();
     });
 }
-function getRandomJoke() {
+function fetchJokeAPI1() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const response = yield fetch('https://icanhazdadjoke.com/', {
@@ -67,7 +67,41 @@ function getRandomJoke() {
                 throw new Error(`Error: ${response.status}`);
             }
             const data = yield response.json();
-            currentJoke = data.joke;
+            return data;
+        }
+        catch (error) {
+            console.error('Error getting joke from icanhazdadjoke.com', error);
+        }
+    });
+}
+function fetchJokeAPI2() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const response = yield fetch('https://api.chucknorris.io/jokes/random', {});
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+            const data = yield response.json();
+            return data;
+        }
+        catch (error) {
+            console.error('Error getting joke from chucknorris.io', error);
+        }
+    });
+}
+function getRandomJoke() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let chooseAPIJokes = Math.round(Math.random());
+            let data;
+            if (chooseAPIJokes === 1) {
+                data = yield fetchJokeAPI1();
+                currentJoke = data.joke;
+            }
+            else {
+                data = yield fetchJokeAPI2();
+                currentJoke = data.value;
+            }
             jokesDiv.innerHTML = currentJoke;
             selectedScore = null;
             const buttons = document.querySelectorAll('#ratingButtons button');
