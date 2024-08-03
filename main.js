@@ -13,6 +13,9 @@ const weatherDescription = document.getElementById('weatherDescription');
 const weatherIcon = document.getElementById('weatherIcon');
 const weatherTemp = document.getElementById('weatherTemp');
 const weatherHumidity = document.getElementById('weatherHumidity');
+const reportJokes = [];
+let currentJoke = '';
+let selectedScore = null;
 function getWeather() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -32,6 +35,26 @@ function getWeather() {
         }
     });
 }
+function initializeRating() {
+    const buttons = document.querySelectorAll('#ratingButtons button');
+    const submitButton = document.getElementById('submitButton');
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            buttons.forEach(btn => btn.classList.remove('btn-selected'));
+            button.classList.add('btn-selected');
+            selectedScore = parseInt(button.getAttribute('data-score'));
+        });
+    });
+    submitButton.addEventListener('click', () => {
+        if (selectedScore !== null) {
+            addJokeReport(selectedScore);
+        }
+        else {
+            console.log('No score selected');
+        }
+        getRandomJoke();
+    });
+}
 function getRandomJoke() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -44,12 +67,26 @@ function getRandomJoke() {
                 throw new Error(`Error: ${response.status}`);
             }
             const data = yield response.json();
-            jokesDiv.innerHTML = data.joke;
+            currentJoke = data.joke;
+            jokesDiv.innerHTML = currentJoke;
+            selectedScore = null;
+            const buttons = document.querySelectorAll('#ratingButtons button');
+            buttons.forEach(btn => btn.classList.remove('btn-selected'));
         }
         catch (error) {
             console.error('Error getting joke', error);
         }
     });
 }
-getRandomJoke();
+function addJokeReport(score) {
+    const jokeReport = {
+        joke: currentJoke,
+        score,
+        date: new Date().toISOString()
+    };
+    reportJokes.push(jokeReport);
+    console.log('Joke Report added:', reportJokes);
+}
 getWeather();
+getRandomJoke();
+initializeRating();

@@ -25,3 +25,36 @@
         z-index: -1;  // Coloca la imagen de fondo detrás del contenido
     }
 }
+
+
+.btn-bad,
+.btn-good,
+.btn-very-good {
+  width: 2rem; 
+  height: 2rem; 
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: transform 0.3s ease; 
+  &:active{
+    border:0
+  }
+
+}
+
+.btn-bad{
+  background-image: url(src/bad.svg);
+}
+
+.btn-good{
+  background-image: url(src/good.svg);
+}
+
+.btn-very-good{
+  background-image: url(src/very-good.svg);
+}
+
+
+.btn-selected {
+  transform: scale(1.4);
+  z-index: 1;
+}

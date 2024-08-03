@@ -35,7 +35,12 @@
                         <div class="card-body">
                             <h4 class="card-title m-3">Ready for your joke?</h4>
                             <p class="card-text" id="jokesDiv"></p>
-                            <button class="btn btn-primary m-3" type="button" onclick="getRandomJoke()">Next Joke</button>
+                            <div class="m-3" id="ratingButtons">
+                                <button class="btn mx-2 btn-bad" type="button" data-score="1"></button>
+                                <button class="btn mx-2 btn-good" type="button" data-score="2"></button>
+                                <button class="btn mx-2 btn-very-good" type="button" data-score="3"></button>
+                            </div>
+                            <button class="btn btn-primary m-3" id="submitButton">Next Joke</button>
                         </div>
 
                     </div>

@@ -1,10 +1,21 @@
 'use strict'
 
+interface JokeReport {
+    joke: string;
+    score: number;
+    date: string; // ISO 8601 string
+}
+
 const jokesDiv = document.getElementById('jokesDiv')!;
 const weatherDescription = document.getElementById('weatherDescription')!;
 const weatherIcon = document.getElementById('weatherIcon')!;
 const weatherTemp = document.getElementById('weatherTemp')!;
 const weatherHumidity = document.getElementById('weatherHumidity')!;
+const reportJokes: JokeReport[] = [];
+
+let currentJoke: string = '';
+let selectedScore: number | null = null;
+
 
 async function getWeather() {
     try{
@@ -27,6 +38,31 @@ async function getWeather() {
     }
 }
 
+function initializeRating() {
+    const buttons = document.querySelectorAll('#ratingButtons button');
+    const submitButton = document.getElementById('submitButton') as HTMLButtonElement;
+
+    buttons.forEach(button => {
+
+        button.addEventListener('click', () => {
+            
+            buttons.forEach(btn => btn.classList.remove('btn-selected'));
+            button.classList.add('btn-selected');
+            selectedScore = parseInt(button.getAttribute('data-score')!);
+            
+        });
+    });
+
+    submitButton.addEventListener('click', () => {
+        if (selectedScore !== null) {
+            addJokeReport(selectedScore);
+        } else {
+            console.log('No score selected');
+        }
+        getRandomJoke();
+    });
+}
+
 async function getRandomJoke() {
     try {
         const response = await fetch('https://icanhazdadjoke.com/', {
@@ -40,13 +76,35 @@ async function getRandomJoke() {
         }
 
         const data = await response.json();
-        jokesDiv.innerHTML = data.joke;
+        currentJoke = data.joke;
+        jokesDiv.innerHTML = currentJoke;
+
+        selectedScore = null;
+        const buttons = document.querySelectorAll('#ratingButtons button');
+        buttons.forEach(btn => btn.classList.remove('btn-selected'));
 
     } catch (error) {
         console.error('Error getting joke', error);
     }
 }
 
-getRandomJoke();
+
+function addJokeReport(score: number) {
+
+    const jokeReport: JokeReport = {
+        joke: currentJoke,
+        score,
+        date: new Date().toISOString()
+    };
+
+    reportJokes.push(jokeReport);
+    console.log('Joke Report added:', reportJokes);
+}
+
+
 getWeather();
+getRandomJoke();
+initializeRating();
+
+
 
