@@ -11,6 +11,7 @@ const weatherDescription = document.getElementById('weatherDescription')!;
 const weatherIcon = document.getElementById('weatherIcon')!;
 const weatherTemp = document.getElementById('weatherTemp')!;
 const weatherHumidity = document.getElementById('weatherHumidity')!;
+const jokeContainer = document.querySelector('.custom-background') as HTMLDivElement;
 const reportJokes: JokeReport[] = [];
 
 let currentJoke: string = '';
@@ -48,7 +49,16 @@ function initializeRating() {
             
             buttons.forEach(btn => btn.classList.remove('btn-selected'));
             button.classList.add('btn-selected');
-            selectedScore = parseInt(button.getAttribute('data-score')!);
+            let newSelectedScore = parseInt(button.getAttribute('data-score')!);
+
+            // Esto es para poder deseleccionar
+            if (newSelectedScore === selectedScore) {
+                selectedScore = null;
+                button.classList.remove('btn-selected'); // Remover la clase si se deselecciona
+            } else {
+                selectedScore = newSelectedScore;
+                button.classList.add('btn-selected'); // Agregar la clase al botón seleccionado
+            }
             
         });
     });
@@ -103,6 +113,19 @@ async function fetchJokeAPI2 (): Promise<any> {
     }
 }
 
+function changeJokeShape() {
+    const shapes = ['shape-1', 'shape-2', 'shape-3', 'shape-4'];
+    const currentShape = shapes.find(shape => jokeContainer.classList.contains(shape));
+    let newShape;
+
+    do {
+        newShape = shapes[Math.floor(Math.random() * shapes.length)];
+    } while (newShape === currentShape);
+
+    shapes.forEach(shape => jokeContainer.classList.remove(shape));
+    jokeContainer.classList.add(newShape);
+}
+
 
 async function getRandomJoke() {
 
@@ -125,6 +148,7 @@ async function getRandomJoke() {
         selectedScore = null;
         const buttons = document.querySelectorAll('#ratingButtons button');
         buttons.forEach(btn => btn.classList.remove('btn-selected'));
+        changeJokeShape();
 
     } catch (error) {
         console.error('Error getting joke', error);
